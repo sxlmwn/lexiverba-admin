@@ -19,7 +19,7 @@ const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn("[&_tr]:border-b dark:border-zinc-800", className)} {...props} />
+  <thead ref={ref} className={cn("[&_tr]:border-b [&_tr]:border-[var(--c-border)] dark:[&_tr]:border-zinc-800", className)} {...props} />
 ))
 TableHeader.displayName = "TableHeader"
 
@@ -42,7 +42,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={cn(
-      "border-t bg-slate-100/50 font-medium [&>tr]:last:border-b-0 dark:bg-zinc-800/50",
+      "border-t border-[var(--c-border)] bg-slate-100/50 font-medium [&>tr]:last:border-b-0 dark:border-zinc-800 dark:bg-zinc-800/50",
       className
     )}
     {...props}
@@ -57,7 +57,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b dark:border-zinc-800 transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-800/50 data-[state=selected]:bg-slate-100 dark:data-[state=selected]:bg-zinc-800",
+      "border-b border-[var(--c-border)] dark:border-zinc-800 transition-colors hover:bg-slate-50/50 dark:hover:bg-zinc-800/50 data-[state=selected]:bg-slate-100 dark:data-[state=selected]:bg-zinc-800 table-row-hover",
       className
     )}
     {...props}

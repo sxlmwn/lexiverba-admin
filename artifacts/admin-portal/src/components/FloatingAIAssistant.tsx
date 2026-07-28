@@ -20,7 +20,7 @@ export const FloatingAIAssistant: React.FC = () => {
           )}
         >
           {/* Header */}
-          <div className="px-5 py-4 border-b flex items-center justify-between bg-blue-500 text-white dark:border-[#27272a]">
+          <div className="px-5 py-4 border-b border-blue-400 flex items-center justify-between bg-blue-500 text-white dark:border-[#27272a]">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
               <span className="font-semibold text-sm">LexiVerba AI</span>

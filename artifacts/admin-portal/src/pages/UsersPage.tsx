@@ -96,7 +96,7 @@ export const UsersPage: React.FC = () => {
           </TableBody>
         </Table>
         
-        <div className="p-4 border-t dark:border-zinc-800 flex items-center justify-between text-sm text-slate-500 bg-slate-50/50 dark:bg-zinc-800/30">
+        <div className="p-4 border-t border-[var(--c-border)] dark:border-zinc-800 flex items-center justify-between text-sm text-slate-500 bg-slate-50/50 dark:bg-zinc-800/30">
           <span>Showing 1 to 20 of 2,847 entries</span>
           <div className="flex gap-2">
             <button className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 disabled:opacity-50" disabled>Previous</button>

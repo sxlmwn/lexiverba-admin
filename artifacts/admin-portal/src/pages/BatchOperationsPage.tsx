@@ -49,7 +49,7 @@ export const BatchOperationsPage: React.FC = () => {
       </div>
 
       <Card className="p-0 overflow-hidden" hoverable={false} interactive={false}>
-        <div className="p-5 border-b dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-800/30">
+        <div className="p-5 border-b border-[var(--c-border)] dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-800/30">
           <h3 className="font-bold">Recent History</h3>
         </div>
         <Table>

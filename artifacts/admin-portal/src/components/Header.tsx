@@ -137,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
           
           {isNotificationsOpen && (
             <div className={`absolute right-0 top-14 w-80 rounded-3xl border-2 shadow-2xl p-4 z-50 ${isDarkMode ? 'bg-[#121215] border-[#27272a] text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-              <div className="font-semibold text-sm mb-3 pb-3 border-b dark:border-zinc-800">Notifications</div>
+              <div className="font-semibold text-sm mb-3 pb-3 border-b border-[var(--c-border)] dark:border-zinc-800">Notifications</div>
               <div className="text-xs text-slate-400 text-center py-4">No new notifications</div>
             </div>
           )}
