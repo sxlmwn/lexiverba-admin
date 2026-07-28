@@ -1,0 +1,95 @@
+# LexiVerba Courier Portal — Build Prompt
+
+I'm attaching a ZIP file called `lexiverba-donezo-main.zip`. This is the **LexiVerba Agency Portal** — our official, finalized design system. I need you to build a **brand new Courier Portal** that uses **100% the exact same design system, theme, colors, fonts, components, and animations** as this zip — but for a completely different purpose (couriers doing document delivery/notary jobs instead of a translation agency dashboard).
+
+## 1. Tech stack (match the zip exactly)
+
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4 (via `@tailwindcss/vite`, `@import "tailwindcss";` in index.css — NOT a tailwind.config.js setup)
+- `lucide-react`, `clsx`, `tailwind-merge` as dependencies
+- Google Fonts: **Inter** (weights 400–900) for all text
+- **Material Symbols Outlined** (Google Fonts icon font) for every icon — same `font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24` rule as in the zip's `index.css`
+- Single-page app pattern: one `App.tsx` holds `currentTab` state and renders pages conditionally (no router needed, but React Router is fine if you prefer — just keep the same visual shell)
+
+## 2. Design tokens — copy these exactly from the zip
+
+**Dark mode** (`.dark` class on `<html>`):
+- Base background: `#09090b`
+- Sidebar/header surface: `#121215`
+- Borders: `#27272a`
+- Text: `slate-100` / white
+
+**Light mode** (default):
+- Base background: `#f4f7ff`
+- Text: `#001033`
+- Sidebar/header surface: white, border `slate-200/80`
+
+**Accent & semantic colors:**
+- Primary accent: `blue-600` (buttons, active states, active-nav indicator bar, focus rings, glow shadows)
+- Success/positive: `emerald-500`
+- Warning/pending: `amber-500`
+- Danger/overdue: `rose-500`
+- Optional highlight: `purple-500`
+
+**Shape & motion language (reuse these exact utility classes/effects from `index.css`):**
+- Rounded corners: `rounded-2xl` / `rounded-3xl` everywhere (cards, buttons, inputs, avatars, badges)
+- `.smooth-card` — GPU-safe rounded card with `backface-visibility: hidden` and `2.5rem` radius
+- `.float-shadow` — soft floating box-shadow under cards (different opacity for light/dark)
+- `.float-hover` — on hover: `translateY(-6px)` + blue glow shadow + blue border, NO scale transform
+- `.badge-shadow`, `.badge-glow-emerald`, `.badge-glow-amber`, `.badge-glow-rose`, `.badge-glow-purple` — colored glow shadows for status badges/pills, lift 2px on hover
+- `@keyframes pageEnter` (`.animate-page-enter`) — fade+slide-up entrance for each page (opacity 0→1, translateY 10px→0, 0.35s)
+- `@keyframes cardPop` (`.animate-card-pop`) — fade-in for cards/list items
+- `animate-pulse` / `animate-ping` for live indicators (online status dot, unread notification dot)
+- Scrollbars hidden globally (`::-webkit-scrollbar { display: none; }`)
+- All color/background transitions: `transition-colors duration-300`
+
+## 3. Shell layout (copy structure from `App.tsx`, `Sidebar.tsx`, `Header.tsx`)
+
+- **Fixed left sidebar**: collapsible between `w-72` (expanded, `p-6`) and `w-20` (collapsed, `p-3`), smooth `transition-all duration-300 ease-in-out`. Contains:
+  - Top: logo block (blue-600 rounded-2xl icon box + wordmark, hides wordmark when collapsed) + a round collapse/expand toggle button (chevron icon)
+  - Nav grouped into labeled sections with `text-[10px] font-extrabold uppercase tracking-[0.2em]` group headers (hidden when collapsed)
+  - Each nav item: rounded-2xl button, active state = subtle background + bold text + a small blue vertical indicator bar on the left edge + blue-tinted icon; inactive = muted gray, hover = lighter background
+  - Optional badge chip per nav item (e.g. count or "AI" or "NEW"), blue-600 filled when active, neutral gray otherwise
+- **Fixed top header**: `h-20`, backdrop-blur, sits to the right of the sidebar (`left-72` / `left-20` depending on collapse state), contains:
+  - Large universal search bar (rounded-2xl, focus state = blue border + glow) with a `⌘F`-style keyboard-shortcut hint, category filter pills, and a live dropdown of matching results grouped by category
+  - Dark/light mode toggle button (round icon button)
+  - Notifications bell with unread-count dot (ping animation) → dropdown panel showing recent activity
+  - User profile menu (avatar with online-status ring, name + role subtitle) → dropdown panel with profile/settings/theme-toggle/sign-out
+- **Main content area**: `pl-72`/`pl-20` (matches sidebar width), `pt-28 px-10 pb-16`, each page wrapped in `.animate-page-enter`
+- **Floating AI Assistant**: reuse the same floating chat-bubble component pattern (bottom-right circular button that opens an assistant panel)
+- **Modals**: reuse the same `InteractiveModal` pattern — rounded-3xl, `border-2`, `shadow-2xl`, animated in/out — for any confirmation, upload, or detail popups
+
+## 4. IMPORTANT — what NOT to copy
+
+I'm also attaching screenshots of an **old courier portal**. These are for **feature/content reference only** — what pages exist, what data they show, what the workflows are. **Do NOT copy their visual design, their sidebar, their layout, their spacing, or their plain flat look.** That old sidebar (plain list, no grouping, no collapse, no active-indicator styling) is exactly the outdated style we're moving away from — it must be fully replaced by the Sidebar/Header system described in section 3, just re-labeled with courier-specific nav items and content.
+
+## 5. Courier Portal — pages to build (content/data reference from the screenshots, visuals from the design system in section 3)
+
+Sidebar nav (grouped "COURIER" + "GENERAL", same visual pattern as the zip's "MENU"/"GENERAL" groups):
+
+**COURIER group:**
+1. **Dashboard** — welcome header ("Welcome back, [Courier Name]"), an "AI Profile Setup" progress banner card, a grid of "AI-Powered Tools" quick-link cards (Smart Route Optimizer, AI Delivery Assistant, Earnings Optimizer, Live Tracking), an "AI Earnings Predictor" panel with a refresh action, three stat cards (Weekly Potential $, Optimal Hours/week, Peak Days), and a "Recommended Work Times" list — each row showing day/time-of-day, demand/optimal tag pills, a short reason, a $ estimate, and a confidence %.
+2. **Assigned Deliveries** — list of delivery/document cards, each with: title, status pill (e.g. Waiting for Notary, Upload Final Document, Courier Return Delivery), type, student/recipient name, last-updated date, a comment/notes strip, an expandable "Route & contact details" row, an ID, and contextual action buttons (View Document, Upload & Complete Delivery, Re-request, Upload Final Document).
+3. **Smart Route (AI badge)** — route optimizer page; if no map integration configured, show an elegant empty-state card ("Map Not Configured — please configure your maps API key to enable route optimization").
+4. **AI Assistant (AI badge)** — "Current Delivery" detail card (item name, recipient, address, delivery instructions note), a Photo Proof upload card, a QR Code Verification card (scan button), and a Recipient Signature capture panel.
+5. **Earnings AI (AI badge)** — weekly earnings goal progress bar with $ remaining, four stat cards (Today, Avg/Delivery, vs Last Week %, Tier Bonus), and an "AI Earnings Suggestions" list — each suggestion with icon, title, description, a $ potential gain, a confidence %, and an Accept button.
+6. **Live Tracking (AI badge)** — connection status bar (online/offline, battery %, signal quality) with a location-tracking toggle, a "Current Location" map placeholder card (empty state until tracking enabled), a "Today's Stats" panel (distance traveled, time active, avg speed, location updates), a "Demand Hot Zones" grid of zone cards (name, radius, coordinates, surge/high/medium tag, $/hr estimate, Navigate button), and a "Geofence Alerts" section.
+7. **Pending** — list of pending deliveries with total count, similar card pattern to Assigned Deliveries but with pending-specific status pills (Available for Pickup, Pending, Return Delivery, Requesting Notary Time) and relevant actions (Pickup Document, Original download, Upload & Complete).
+8. **Achievements (AI badge)** — achievements grid (locked/in-progress cards with icon, title, description, progress bar, % complete, point value) and total points counter, plus an "AI Performance Coach" panel with a performance score and personalized insight cards (e.g. delivery reliability streak, route optimization time-savings tip) with a refresh action.
+9. **Performance** — stat cards (Total Deliveries, On-Time Rate with progress bar, Today's Deliveries, Customer Rating), a Delivery Stats panel (this week count, avg time/delivery, total distance), a Performance panel (on-time delivery % bar + encouraging note), and an Achievements summary strip (streak badge + small achievement tags).
+10. **Completed** — completed deliveries list with total count and summary stats (Documents Delivered, Success Rate, Total Routes), each list item showing title, type, recipient, completed date/time, status pill, notes, and a View Details action.
+
+**GENERAL group:** Settings, Help, Logout (reuse the same modal/page pattern as the agency portal's Settings/Help/Logout).
+
+## 6. Behavior requirements
+
+- Dark/light mode toggle must work globally exactly like the zip (`.dark` class added/removed on `document.documentElement`), affecting every page.
+- Sidebar collapse/expand must persist across page navigation within the session.
+- Universal header search should search across courier data (deliveries, routes, earnings, achievements, settings) with the same category-pill + instant-results-dropdown UX as the zip.
+- All interactive elements (buttons, cards, nav items) must have the same hover/active micro-interactions as the zip (lift, glow, scale on small icon buttons, cursor-pointer).
+- Use realistic mock/sample data for a demo courier user — no backend required unless the builder supports one natively.
+- Fully responsive layout; sidebar can collapse to icon-only automatically on smaller screens if the platform supports it.
+
+## 7. Summary of intent
+
+Same brand system, same component architecture, same motion language, same color language as the LexiVerba Agency Portal in the attached zip — reskinned with courier-specific navigation, terminology, and page content inspired by (not visually copied from) the attached courier portal screenshots.

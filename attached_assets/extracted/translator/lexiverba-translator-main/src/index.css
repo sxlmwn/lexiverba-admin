@@ -1,0 +1,170 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --c-bg: #f8fafc;
+  --c-surface: #ffffff;
+  --c-accent: #60a5fa;
+  --c-accent-hover: #3b82f6;
+  --c-text: #0f172a;
+  --c-text-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-success: #10b981;
+  --c-warning: #f59e0b;
+  --c-danger: #ef4444;
+  --c-info: #60a5fa;
+}
+
+.dark {
+  --c-bg: #09090b;
+  --c-surface: #18181b;
+  --c-accent: #93c5fd;
+  --c-accent-hover: #60a5fa;
+  --c-text: #fafafa;
+  --c-text-muted: #a1a1aa;
+  --c-border: #27272a;
+  --c-success: #10b981;
+  --c-warning: #f59e0b;
+  --c-danger: #ef4444;
+  --c-info: #93c5fd;
+}
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* True Neutral Charcoal / Pitch Black Dark Mode */
+.dark {
+  background-color: #09090b !important;
+  color: #fafafa !important;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24 !important;
+}
+
+/* Fix Card Edge Breaking & GPU Rasterization Artifacts */
+.smooth-card {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  border-radius: 2.5rem;
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+/* Deep Soft Floating Shadows */
+.float-shadow {
+  box-shadow: 0 16px 40px -10px rgba(0, 74, 198, 0.08), 0 6px 16px -2px rgba(0, 0, 0, 0.04);
+}
+
+.dark .float-shadow {
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8), 0 6px 20px -2px rgba(0, 0, 0, 0.6);
+}
+
+/* Pure Vertical Lift Micro-interaction */
+.float-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  will-change: transform, box-shadow;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  background-clip: padding-box;
+}
+
+.float-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 50px -12px rgba(59, 130, 246, 0.28), 0 12px 24px -4px rgba(0, 0, 0, 0.08);
+  border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+.dark .float-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 55px -12px rgba(59, 130, 246, 0.35), 0 14px 28px -4px rgba(0, 0, 0, 0.95);
+  border-color: rgba(59, 130, 246, 0.6) !important;
+}
+
+/* Reference Project Hover Rise Animation */
+.hover-rise {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), 
+              box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), 
+              border-color 0.3s ease, 
+              background-color 0.3s ease;
+  will-change: transform, box-shadow;
+}
+
+.hover-rise:hover {
+  transform: translateY(-2.5px);
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.08), 0 2px 10px -2px rgba(59, 130, 246, 0.10);
+  border-color: rgba(59, 130, 246, 0.35);
+  position: relative;
+  z-index: 10;
+}
+
+.clickable-badge,
+[data-badge-interactive="true"] {
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease;
+  display: inline-flex;
+}
+
+.clickable-badge:hover,
+[data-badge-interactive="true"]:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.06);
+  box-shadow: 0 4px 12px rgba(22, 82, 240, 0.18);
+}
+
+.clickable-badge:active,
+[data-badge-interactive="true"]:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Enhanced Edge-Safe Badge Styles */
+.badge-shadow, .badge-glow-emerald, .badge-glow-amber, .badge-glow-rose, .badge-glow-purple {
+  transition: transform 0.25s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  background-clip: padding-box;
+}
+
+/* Page Entrance & Smooth Transitions */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.35s ease-out forwards;
+}
+
+@keyframes cardPop {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-card-pop {
+  animation: cardPop 0.3s ease-out forwards;
+}

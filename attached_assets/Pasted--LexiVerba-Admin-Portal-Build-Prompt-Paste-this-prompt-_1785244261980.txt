@@ -1,0 +1,151 @@
+# LexiVerba — Admin Portal Build Prompt
+
+Paste this prompt into the AI builder, and attach:
+- The admin dashboard screenshot (reference only for layout/content — do not literally clone the dark theme in the screenshot, follow the design system below instead)
+- All 5 existing portal zips (translator, courier, qa, donezo/agency, notary) as design + code reference
+
+---
+
+## 1. Context
+
+I'm building **LexiVerba**, a certified-translation platform with multiple role-based portals (customer, agency, QA, translator, notary, courier, referral partner, and admin). Five of these portals already exist as working React codebases with an established, consistent design system. I need you to build the **6th portal: the Admin Portal** — the top-level "Super Admin Control Center" that oversees the entire platform.
+
+I'm attaching the zips of the 5 existing portals as reference. **Study their shared design system carefully and replicate it exactly** — do not introduce a new visual style. I'm also attaching a screenshot of an early draft of the admin dashboard — use it only for **layout and content ideas** (what sections/stats/cards exist), not for its dark-only look; the final admin portal must support both light and dark themes like the others.
+
+## 2. Tech stack
+
+- React + TypeScript + Vite
+- Tailwind CSS (v4 style, `@import "tailwindcss"` + `@custom-variant dark`)
+- **shadcn/ui** full component set (Table, Dialog, DropdownMenu, Tabs, Select, Badge, Card, Sheet, Command, etc.) — the admin portal is the most data-heavy portal of all (user lists, agency lists, invoice tables, logs), so use shadcn's Table/Dialog/DropdownMenu components rather than hand-rolled markup, the same way the QA, Notary, and Courier portals do
+- Material Symbols Outlined for icons (`font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24`)
+- Inter font throughout
+- No backend — frontend-only with realistic **dummy/mock data** hardcoded in the components (no Supabase, no real API calls), exactly like all 5 existing portals
+
+## 3. Design system — match this exactly
+
+**Colors (CSS variables, light / dark):**
+```css
+:root {
+  --c-bg: #f8fafc;
+  --c-surface: #ffffff;
+  --c-accent: #2563eb;
+  --c-accent-hover: #1d4ed8;
+  --c-text: #0f172a;
+  --c-text-muted: #64748b;
+  --c-border: #e2e8f0;
+  --c-success: #10b981;
+  --c-warning: #f59e0b;
+  --c-danger: #ef4444;
+  --c-info: #3b82f6;
+}
+.dark {
+  --c-bg: #09090b;
+  --c-surface: #18181b;
+  --c-accent: #3b82f6;
+  --c-accent-hover: #2563eb;
+  --c-text: #fafafa;
+  --c-text-muted: #a1a1aa;
+  --c-border: #27272a;
+}
+```
+Dark mode base is a true neutral charcoal/near-black (`#09090b` bg, `#18181b` surfaces / sidebar `#121215`), **not** navy or slate-tinted black.
+
+**Cards & shape:**
+- Large rounded corners: `rounded-[2.5rem]` on stat/metric cards, `rounded-2xl`/`rounded-3xl` on smaller cards, list items, dropdowns
+- `smooth-card` treatment: `backface-visibility: hidden`, `transform: translateZ(0)`, `background-clip: padding-box` (prevents corner rendering artifacts)
+- Soft floating shadows: light mode `0 16px 40px -10px rgba(0,74,198,0.08), 0 6px 16px -2px rgba(0,0,0,0.04)`; dark mode much deeper `0 20px 50px -12px rgba(0,0,0,0.8)...`
+- `float-hover`: cards lift `translateY(-6px)` on hover with a blue-tinted shadow and a blue border glow — used on all clickable stat/metric cards
+- Metric/stat cards invert to a **blue gradient fill on hover** (`from-blue-600 via-blue-700 to-blue-900`, white text, large faint icon bleeding off the top-right corner) instead of just a border change — this is the signature "wow" interaction from the existing portals, replicate it on the admin stat cards too
+- Badges use color-specific glow shadows (`badge-glow-emerald`, `badge-glow-amber`, `badge-glow-rose`, `badge-glow-purple`) that lift and brighten on hover
+
+**Typography:**
+- Inter, antialiased
+- Big numbers (stat card values): `text-3xl lg:text-4xl font-semibold tracking-tight`
+- Section eyebrow labels: `text-[10px] font-semibold uppercase tracking-[0.2em]` or `tracking-widest`, muted color
+- Body/labels default to small, dense text (`text-xs`, `text-[10px]`, `text-[11px]`) — this is a dense, information-rich professional UI, not a spacious consumer app
+
+**Motion:**
+- Page entrance: fade + slide up (`pageEnter` keyframe, translateY(10px) → 0, opacity 0 → 1)
+- All hover/transition timings 0.2s–0.35s, `cubic-bezier(0.22, 1, 0.36, 1)` for the nicer "rise" hover on list rows
+
+## 4. Layout shell
+
+**Sidebar** (fixed left, collapsible between `w-72` expanded and `w-20` icon-only):
+- Top: logo mark (blue-600 rounded-2xl square icon + "LexiVerba" wordmark) + collapse/expand toggle button (chevron, circular button)
+- Grouped nav with small uppercase group labels (10px, tracked, muted) — active item gets a light background pill (`bg-slate-100` light / `bg-[#1e1e24]` dark), a blue vertical indicator bar on the left edge, and the icon turns blue
+- Each item can carry a trailing badge (count number, or "New"/"AI" pill)
+- Because the admin portal has many more sections than the other portals, organize the sidebar into these groups (all present, since this is the main control portal):
+
+```
+NAVIGATION
+- Dashboard
+- Analytics                [New]
+- NPS Analytics            [New]
+- Finance
+- Pricing
+- Partner Applications
+- Commissions
+- Referral Analytics
+- Agency Analytics
+- Agency Invoices
+- Customer Orders
+- Customer Feedback
+- Survey Campaigns
+- Workflow Builder
+- Email Management
+- Translation Quality
+- Batch Operations          [count badge]
+- Report Builder            [New]
+
+ROLE PORTALS  (each expandable/links out, chevron on the right)
+- Customer Portal
+- Agency Portal
+- QA Portal
+- Translator Portal
+- Notary Portal
+- Courier Portal
+- Referral Partner Portal
+```
+Build the full sidebar exactly like this, in full — do not trim it down. For sections beyond Dashboard, it's fine if most of them render as clean placeholder pages for now (see Section 6) as long as the sidebar, routing, and page shell all work.
+
+**Header** (fixed top, shifts with sidebar collapse state):
+- Large global search bar (rounded-2xl, `⌘F` kbd hint) with a live dropdown showing categorized instant results (documents, users, invoices, agencies, etc.) and category filter pills — same pattern as the agency portal's search
+- Right side: theme toggle (sun/moon icon button), notifications bell with unread dot + dropdown panel (list of recent system events), user profile menu (avatar with online-status dot, name + role label "Master Administrator", dropdown with "View Profile", "System Preferences", theme switch, "Sign Out")
+
+## 5. Dashboard page — primary spec (from the reference screenshot)
+
+Top greeting: "Admin Dashboard" title + "Welcome back, {email}" subtitle, with Search / Support / notification bell / avatar in the header.
+
+**Hero banner:** "Super Admin Control Center" headline with a shield icon, subtitle "Complete system oversight and management", a "Refresh" button top-right.
+
+**Row of 4 top-level stat cards** (use the blue-gradient-on-hover MetricCard pattern):
+- Total Users — count, small people icon
+- Documents — count, document icon
+- AI Models — count, info/model icon
+- Success Rate — percentage, trending-up icon
+
+**Tab bar** directly below (pill-style tab switcher, not full page nav): System Health | AI Overview | User Stats | Activity Log
+
+**Under "System Health" tab — 4 status cards** in a row, each showing a service name (Database, Edge Functions, Storage, Authentication), a small icon, a green checkmark, and a "Healthy" badge (rounded pill, green).
+
+**"System Performance" section** — large section header + subtitle ("Real-time system metrics and performance indicators"), containing 3 labeled progress bars with percentage on the right:
+- Database Connections — e.g. 85%
+- Storage Usage — e.g. 42%
+- API Response Time — e.g. 95%
+Use the shared `ProgressBar` pattern (rounded track, blue fill, animated width transition).
+
+**Quick actions row** — 4 equal-width buttons/cards, icon + label, dark/outlined style: Create Agency, View Users, AI Control, Settings.
+
+## 6. Other pages
+
+- Give every sidebar item a route so navigation doesn't break.
+- Build these with real (mock) content and tables, since they're core to admin oversight: **Users** (View Users), **Finance**, **Pricing**, **Agency Analytics**, **Agency Invoices**, **Customer Orders**, **Customer Feedback**, **Translation Quality**, **Batch Operations**. Use shadcn `Table` with sortable columns, status badges, row actions (dropdown menu: view/edit/suspend/etc.), search + filter bar above each table, and pagination.
+- The remaining sections (Analytics, NPS Analytics, Partner Applications, Commissions, Referral Analytics, Survey Campaigns, Workflow Builder, Email Management, Report Builder) can be clean "coming soon" placeholder pages with a centered icon, title, and short description — matching the shared card/shell style — so the whole app feels complete and consistent even where the real feature isn't built out yet.
+- "Role Portals" section items should just be static links/rows (they represent the other portals) — clicking one can show a simple "Opens the {X} Portal" placeholder or external-style card; no need to actually embed those portals.
+
+## 7. What NOT to do
+
+- Don't invent a new color palette, font, or shape language — reuse exactly what's described in Section 3.
+- Don't make it a glassy/frosted/neon look — it should look like clean, dense, professional office software.
+- Don't wire up any real backend/Supabase calls — mock data objects/arrays only, like the other 5 portals.
+- Don't drop any sidebar item — the full list in Section 4 must all be present and clickable, even where the page behind it is a placeholder.

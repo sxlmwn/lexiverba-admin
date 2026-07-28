@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "LexiVerba Courier Portal"
+version = "1.0.0"
+id = "artifacts/courier-portal"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18251
+
+[services.development]
+run = "pnpm --filter @workspace/courier-portal run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/courier-portal", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/courier-portal/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18251"
+BASE_PATH = "/"
