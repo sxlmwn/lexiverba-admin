@@ -179,7 +179,7 @@ export const DashboardPage: React.FC = () => {
                     <th className="px-6 py-4 font-semibold">Description</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y dark:divide-zinc-800">
+                <tbody className="divide-y divide-[var(--c-border)] dark:divide-zinc-800">
                   {Array.from({ length: 15 }).map((_, i) => (
                     <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-zinc-800/50 transition-colors table-row-hover">
                       <td className="px-6 py-4 text-xs font-mono text-slate-500">2026-07-25 14:{30 - i}:00</td>
